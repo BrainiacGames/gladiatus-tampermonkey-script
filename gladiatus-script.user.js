@@ -14,6 +14,17 @@
 // ==/UserScript==
 
 
+/*
+
+- IMPORTANT: This script was forked from mogyi006 by ItsBear, script original by Eryk Bodziony.
+
+- UPDATES: This script has Gold Saving and Food Eatings features added by mogyi006.
+However, it was modified to only eat food at 10% and Gold Saving at 100k Gold (Temporary)
+as the Gold saving feature was very unreliable.
+
+*/
+
+
 (function () {
     'use strict';
 
@@ -231,10 +242,6 @@
         eatFood: 'Eat Food',
         saveGold: 'Save Gold',
         100: '100',
-        250: '250',
-        500: '500',
-        750: '750',
-        1000: '1M',
     }
 
     const contentPL = {
@@ -264,10 +271,6 @@
         eatFood: 'Eat Food',
         saveGold: 'Save Gold',
         100: '100',
-        250: '250',
-        500: '500',
-        750: '750',
-        1000: '1M',
     }
 
     const contentES = {
@@ -297,10 +300,6 @@
         eatFood: 'Eat Food',
         saveGold: 'Save Gold',
         100: '100',
-        250: '250',
-        500: '500',
-        750: '750',
-        1000: '1M',
     }
 
     let content;
@@ -510,10 +509,6 @@
                         <div class="settingsSubcontent">
                             <div id="save_gold_0" class="settingsButton">${content.no}</div>
                             <div id="save_gold_100" class="settingsButton">${content[100]}</div>
-                            <div id="save_gold_250" class="settingsButton">${content[250]}</div>
-                            <div id="save_gold_500" class="settingsButton">${content[500]}</div>
-                            <div id="save_gold_750" class="settingsButton">${content[750]}</div>
-                            <div id="save_gold_1000" class="settingsButton">${content[1000]}</div>
                         </div>
                     </div>
                 </div>`;
@@ -691,35 +686,7 @@
                 localStorage.setItem('saveGoldAmount', 100000);
                 saveGoldState = 0;
                 localStorage.setItem('saveGoldState', 0);
-            } else if (amount === '250') {
-                saveGold = true;
-                localStorage.setItem('saveGold', true);
-                saveGoldAmount = 250000;
-                localStorage.setItem('saveGoldAmount', 250000);
-                saveGoldState = 0;
-                localStorage.setItem('saveGoldState', 0);
-            } else if (amount === '500') {
-                saveGold = true;
-                localStorage.setItem('saveGold', true);
-                saveGoldAmount = 500000;
-                localStorage.setItem('saveGoldAmount', 500000);
-                saveGoldState = 0;
-                localStorage.setItem('saveGoldState', 0);
-            } else if (amount === '750') {
-                saveGold = true;
-                localStorage.setItem('saveGold', true);
-                saveGoldAmount = 750000;
-                localStorage.setItem('saveGoldAmount', 750000);
-                saveGoldState = 0;
-                localStorage.setItem('saveGoldState', 0);
-            } else if (amount === '1000') {
-                saveGold = true;
-                localStorage.setItem('saveGold', true);
-                saveGoldAmount = 1000000;
-                localStorage.setItem('saveGoldAmount', 1000000);
-                saveGoldState = 0;
-                localStorage.setItem('saveGoldState', 0);
-            }
+            } 
             else {
                 saveGold = false;
                 localStorage.setItem('saveGold', false);
@@ -733,10 +700,6 @@
 
         $("#save_gold_0").on('touchstart click', function () { setSaveGold('0') });
         $("#save_gold_100").on('touchstart click', function () { setSaveGold('100') });
-        $("#save_gold_250").on('touchstart click', function () { setSaveGold('250') });
-        $("#save_gold_500").on('touchstart click', function () { setSaveGold('500') });
-        $("#save_gold_750").on('touchstart click', function () { setSaveGold('750') });
-        $("#save_gold_1000").on('touchstart click', function () { setSaveGold('1000') });
 
         function reloadSettings() {
             closeSettings();
@@ -777,7 +740,7 @@
             $(`#eat_food_${eatFood}`).addClass('active');
 
             $('#gold_settings').addClass(saveGold ? 'active' : 'inactive');
-            for (let i of ['0', '100', '250', '500', '750', '1000']) {
+            for (let i of ['0', '100']) {
                 $(`#save_gold_${i}`).addClass(saveGoldAmount / 1000 === Number(i) ? 'active' : 'inactive');
             }
         };
@@ -959,13 +922,14 @@
 
         return country;
     }
-
+/*
     function setCountrySettings(country) {
         if (country === "Italy") {
             setDoExpedition(false);
             setDoDungeon(false);
             setEatFood(true);
         } else if (country === "Africa") {
+            console.log("Set Expedition False 969");
             setDoExpedition(false);
             setDoDungeon(false);
             setEatFood(true);
@@ -988,6 +952,7 @@
             setEatFood(false);
         }
     }
+    */
 
     /****************
     *    Auto Go    *
@@ -998,10 +963,10 @@
         // Variables
 
         const currentTime = new Date().getTime();
-        const clickDelay = getRandomInt(900, 2400);
+        const clickDelay = getRandomInt(50, 100);
 
         const country = getCountry();
-        setCountrySettings(country);
+        //setCountrySettings(country);
 
         const inUnderworld = document.getElementById('wrapper_game').classList.contains('underworld');
         if (inUnderworld) {
@@ -1012,10 +977,11 @@
         const cooldownBarDungeon = document.getElementById('cooldown_bar_dungeon');
         const dungeonAvailable = cooldownBarDungeon.style.display !== 'none';
         if (!dungeonAvailable) {
+            console.log("No Dungeon Available");
             setDoDungeon(false);
         }
 
-        const hpDiv = document.getElementById('header_values_hp_points');
+        /*const hpDiv = document.getElementById('header_values_hp_points');
         const hpSpan = hpDiv.querySelector('span');
 
         // Get the life points value
@@ -1024,7 +990,9 @@
             lifePoints = Number(hpSpan.textContent.trim().replace(/[^0-9]/gi, ''));
         } else {
             lifePoints = Number(hpDiv.childNodes[0].textContent.trim().replace(/[^0-9]/gi, ''));
-        }
+        }*/
+        const lifePoints = document.getElementById("header_values_hp_bar").getAttribute("data-value");
+
         console.log("Life Points: " + lifePoints);
 
         // Claim Daily Reward
@@ -1063,7 +1031,7 @@
         /***************
         *   Use Food   *
         ***************/
-        const lifePointsThreshold = 8000;
+        const lifePointsThreshold = 2000;
         if (lifePoints < lifePointsThreshold) {
             console.log("Low health");
             //In case of low health, pause everything and eat food
@@ -1160,6 +1128,7 @@
                             setEatFood(false);
                             setpauseToEat(false);
                             if (!doExpedition) {
+                                console.log("Set Expedition False 1163");
                                 setDoExpedition(false);
                             }
                             if (!doArena) {
@@ -1185,9 +1154,11 @@
             } else {
                 setpauseToEat(false);
                 if (doExpedition) {
+                    console.log("Set Expedition False 1194");
                     setDoExpedition(false);
                 }
                 if (doArena) {
+                    console.log("Set Arena False 1198");
                     setDoArena(false);
                 }
                 if (!doDungeon && !inUnderworld) {
@@ -1213,6 +1184,10 @@
         ****************/
 
         if (!pauseToEat && saveGold) {
+            console.log("WTF");
+            console.log("Pause to save gold? " + localStorage.getItem("pauseToSaveGold"));
+            console.log("Save Gold State: " + localStorage.getItem("saveGoldState"));
+
             if (player.gold < saveGoldAmount * 1.04 && saveGoldState === 0) {
                 // Not enough gold and not in the process of saving gold
                 console.log("Not enough gold: " + player.gold + " < " + saveGoldAmount * 1.04);
@@ -1312,7 +1287,7 @@
                     //     }, clickDelay * 2);
                     // }
                     // Set the saveGoldAmount to the price of the first item that can be bought
-                    if (saveGoldState === 0) {
+                    /*if (saveGoldState === 0) {
                         console.log("No item found to buy at price: " + saveGoldAmount);
                         let price = 0;
                         for (let row of table.rows) {
@@ -1346,7 +1321,7 @@
                         setTimeout(function () {
                             location.reload();
                         }, clickDelay * 2);
-                    }
+                    }*/
 
                 } else if (inGuildMarketPage && saveGoldState === 1) {
                     // Item was bought, go to packages to retrieve
@@ -1383,6 +1358,7 @@
                         }, clickDelay * 4);
                     } else {
                         console.log("Item level does not match...");
+                        setSaveGoldState(0);
                     }
                 } else if (inGuildMarketPage && saveGoldState === 2) {
                     // Sell Package for the same price
@@ -1451,7 +1427,7 @@
                             setSaveGoldAmount(price);
                             setSaveGold(false);
                         } else {
-                            setSaveGoldAmount(price);
+                            setSaveGoldAmount(100000);
                         }
 
                         // Refresh the page to get the latest items
@@ -1667,7 +1643,9 @@
 
                 let dungeonPoints = Number(document.getElementById('dungeonpoints_value_point').innerText);
 
+                /*
                 if (activeDungeonQuests < 2 || dungeonPoints < 8) {
+                    console.log("Not Enough Quest");
                     setDoDungeon(false);
                 } else if (activeDungeonQuests === 3) {
                     setDoDungeon(true);
@@ -1675,7 +1653,7 @@
                     setDoDungeon(true);
                 } else if (activeDungeonQuestsEach) {
                     setDoDungeon(true);
-                }
+                }*/
             }
 
             function takeQuest() {
@@ -2392,7 +2370,7 @@
                         if (actions[i].time < minValue) {
                             minValue = actions[i].time;
                             index = i;
-                        }
+                        }actions
                     };
                     return actions[index]
                 };
